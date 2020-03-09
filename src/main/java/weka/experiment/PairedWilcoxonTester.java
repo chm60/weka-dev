@@ -714,7 +714,7 @@ public class PairedWilcoxonTester implements OptionHandler, Tester, RevisionHand
         + " and resultset=" + resultset2.templateString());
     }
 
-    PairedStats pairedStats = new PairedStats(m_SignificanceLevel);
+    WilcoxonSignedPairedStats pairedStats = new WilcoxonSignedPairedStats(m_SignificanceLevel);
     pairedStats.ranker.setSize(dataset1.size());
 
     for (int k = 0; k < dataset1.size(); k++) {
@@ -741,7 +741,7 @@ public class PairedWilcoxonTester implements OptionHandler, Tester, RevisionHand
       }
       double value1 = current1.value(comparisonColumn);
       double value2 = current2.value(comparisonColumn);
-      pairedStats.addWC(value1, value2, k);
+      pairedStats.add(value1, value2);
     }
     pairedStats.ranker.computeRank();
 
@@ -758,17 +758,13 @@ public class PairedWilcoxonTester implements OptionHandler, Tester, RevisionHand
 
       }else{
 
-        pairedStats.assignValueGroups(value1-value2);
-
-
+        pairedStats.computeRankedSum(value1-value2);
       }
 
     }
 
 
-    pairedStats.calculateDerivedWilcoxon();
-    // System.err.println("Differences stats:\n" +
-    // pairedStats.differencesStats);
+    pairedStats.calculateDerived();
     return pairedStats;
 
   }

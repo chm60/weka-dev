@@ -33,15 +33,21 @@ import weka.core.Utils;
  * @author Len Trigg (trigg@cs.waikato.ac.nz)
  * @version $Revision: 14314 $
  */
-public class PairedStats
-  implements RevisionHandler, PairedStatsInterface {
-  
+public class PairedStats2
+  implements RevisionHandler {
+
+  /** The counter for the negative group */
+  public double negativeCounter;
+
+  /** The counter for the positive group */
+  public double positiveCounter;
+
   /** The stats associated with the data in column 1 */
   public Stats xStats;
-  
+
   /** The stats associated with the data in column 2 */
   public Stats yStats;
-  
+
   /** The stats associated with the paired differences */
   public Stats differencesStats;
 
@@ -53,10 +59,12 @@ public class PairedStats
 
   /** The sum of the products */
   public double xySum;
-  
+
   /** The number of data points seen */
   public double count;
-  
+
+  public Ranker ranker;
+
   /**
    * A significance indicator:
    * 0 if the differences are not significant
@@ -64,19 +72,21 @@ public class PairedStats
    * < 0 if x significantly less than y
    */
   public int differencesSignificance;
-  
+
   /** The significance level for comparisons */
   public double sigLevel;
 
   /** The degrees of freedom (if set programmatically) */
   protected int m_degreesOfFreedom = 0;
-    
+
   /**
    * Creates a new PairedStats object with the supplied significance level.
    *
    * @param sig the significance level for comparisons
    */
-  public PairedStats(double sig) {
+  public PairedStats2(double sig) {
+
+    ranker = new Ranker();
     xStats = new Stats();
     yStats = new Stats();
     differencesStats = new Stats();
@@ -87,7 +97,7 @@ public class PairedStats
    * Sets the degrees of freedom (if calibration is required).
    */
   public void setDegreesOfFreedom(int d) {
-   
+
     if (d <= 0) {
       throw new IllegalArgumentException("PairedStats: degrees of freedom must be >= 1");
     }
@@ -108,7 +118,6 @@ public class PairedStats
    * @param value1 the value from column 1
    * @param value2 the value from column 2
    */
-
   public void add(double value1, double value2) {
 
     xStats.add(value1);
@@ -117,7 +126,26 @@ public class PairedStats
     xySum += value1 * value2;
     count ++;
   }
-    
+
+  /**
+   * Add an observed pair of values for wilcoxon test.
+   *
+   * @param value1 the value from column 1
+   * @param value2 the value from column 2
+   */
+  public void addWC(double value1, double value2, int index) {
+
+    xStats.add(value1);
+    yStats.add(value2);
+    differencesStats.add(value1 - value2);
+    xySum += value1 * value2;
+
+
+    ranker.add(value1, value2, (int)count);
+    count ++;
+
+  }
+
   /**
    * Removes an observed pair of values.
    *
@@ -133,7 +161,7 @@ public class PairedStats
     count --;
   }
 
-    
+
   /**
    * Adds an array of observed pair of values.
    *
@@ -171,15 +199,126 @@ public class PairedStats
     }
   }
 
-  /**
-   * Calculates the derived statistics for the given test (significance etc).
-   */
+  public void assignValueGroups(double value){
+    if (value > 0){
+      positiveCounter += ranker.checkRank(value);
+    }else if(value < 0){
+      negativeCounter += ranker.checkRank(value);
+    }
 
-  @Override
-  public void calculateDerived() {
+   // differencesStats.add(ranker.checkRank(value));
+    //count++;
+
 
   }
 
+  /**
+   * Calculates the derived statistics for wilcoxon (significance etc).
+   */
+  public void calculateDerivedWilcoxon() {
+
+    xStats.calculateDerived();
+    yStats.calculateDerived();
+    differencesStats.calculateDerived();
+
+    correlation = Double.NaN;
+    if (!Double.isNaN(xStats.stdDev) && !Double.isNaN(yStats.stdDev)
+            && (xStats.stdDev > 0) && (yStats.stdDev > 0) && (count > 1)) {
+      correlation = (xySum - xStats.sum * yStats.sum / count)
+              / ((count - 1) * xStats.stdDev * yStats.stdDev);
+    }
+
+    if (differencesStats.stdDev > 0) {
+
+      double tval = Math.min(negativeCounter, positiveCounter);
+
+      // Used to generate z value as a place holder
+      double mn = count * (count+1) *0.25;
+      double se = Math.sqrt((count * (count + 1) * (2*count + 1) )/24 );
+      double sgn = ((tval-mn) > 0) ? 1 : -1;
+      double d = 0.5 * sgn;
+      double z = (tval - mn - d) / se;
+
+      if (m_degreesOfFreedom >= 1) {
+        differencesProbability = 2 * Statistics.normalProbability(Math.abs(z));
+      } else {
+        if (count > 1) {
+
+          // TODO: Implement stat table generation here
+          differencesProbability = 2*Statistics.normalProbability(z);  
+        } else {
+          differencesProbability = 1;
+        }
+      }
+    } else {
+      if (differencesStats.sumSq == 0) {
+        differencesProbability = 1.0;
+      } else {
+        differencesProbability = 0.0;
+      }
+    }
+    differencesSignificance = 0;
+    if (differencesProbability <= sigLevel) {
+      if (xStats.mean > yStats.mean) {
+        differencesSignificance = 1;
+      } else {
+        differencesSignificance = -1;
+      }
+    }
+  }
+
+
+  /**
+   * Calculates the derived statistics (significance etc).
+   */
+  public void calculateDerived() {
+
+    xStats.calculateDerived();
+    yStats.calculateDerived();
+    differencesStats.calculateDerived();
+
+    correlation = Double.NaN;
+    if (!Double.isNaN(xStats.stdDev) && !Double.isNaN(yStats.stdDev)
+            && (xStats.stdDev > 0) && (yStats.stdDev > 0) && (count > 1)) {
+      correlation = (xySum - xStats.sum * yStats.sum / count)
+              / ((count - 1) * xStats.stdDev * yStats.stdDev);
+    }
+
+    if (differencesStats.stdDev > 0) {
+      // finds tval
+      double tval = differencesStats.mean
+              * Math.sqrt(count)
+              / differencesStats.stdDev;
+
+      // converts t to p value
+      if (m_degreesOfFreedom >= 1) {
+        differencesProbability = Statistics.FProbability(tval * tval, 1,
+                m_degreesOfFreedom);
+      } else {
+        if (count > 1) {
+          differencesProbability = Statistics.FProbability(tval * tval, 1,
+                  (int) count - 1);
+        } else {
+          differencesProbability = 1;
+        }
+      }
+    } else {
+      if (differencesStats.sumSq == 0) {
+        differencesProbability = 1.0;
+      } else {
+        differencesProbability = 0.0;
+      }
+    }
+    differencesSignificance = 0;
+    if (differencesProbability <= sigLevel) {
+      if (xStats.mean > yStats.mean) {
+        differencesSignificance = 1;
+      } else {
+        differencesSignificance = -1;
+      }
+    }
+  }
+    
   /**
    * Returns statistics on the paired comparison.
    *
@@ -241,7 +380,43 @@ public class PairedStats
    */
   public static void main(String [] args) {
 
-
+    try {
+      PairedStats2 ps = new PairedStats2(0.05);
+      java.io.LineNumberReader r = new java.io.LineNumberReader(
+              new java.io.InputStreamReader(System.in));
+      String line;
+      while ((line = r.readLine()) != null) {
+        line = line.trim();
+        if (line.equals("") || line.startsWith("@") || line.startsWith("%")) {
+          continue;
+        }
+        java.util.StringTokenizer s
+                = new java.util.StringTokenizer(line, " ,\t\n\r\f");
+        int count = 0;
+        double v1 = 0, v2 = 0;
+        while (s.hasMoreTokens()) {
+          double val = (new Double(s.nextToken())).doubleValue();
+          if (count == 0) {
+            v1 = val;
+          } else if (count == 1) {
+            v2 = val;
+          } else {
+            System.err.println("MSG: Too many values in line \""
+                    + line + "\", skipped.");
+            break;
+          }
+          count++;
+        }
+        if (count == 2) {
+          ps.add(v1, v2);
+        }
+      }
+      ps.calculateDerived();
+      System.err.println(ps);
+    } catch (Exception ex) {
+      ex.printStackTrace();
+      System.err.println(ex.getMessage());
+    }
   }
 } // PairedStats
 

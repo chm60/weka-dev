@@ -722,7 +722,7 @@ public class PairedTTester implements OptionHandler, Tester, RevisionHandler {
         + " and resultset=" + resultset2.templateString());
     }
 
-    PairedStats pairedStats = new PairedStats(m_SignificanceLevel);
+    PairedStats pairedStats = new StudentPairedStats(m_SignificanceLevel);
 
     for (int k = 0; k < dataset1.size(); k++) {
       Instance current1 = dataset1.get(k);
