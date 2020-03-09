@@ -33,7 +33,7 @@ import weka.core.Utils;
  * @author Len Trigg (trigg@cs.waikato.ac.nz)
  * @version $Revision: 14314 $
  */
-public class PairedStats2
+public class PairedStatsLegacy
   implements RevisionHandler {
 
   /** The counter for the negative group */
@@ -84,7 +84,7 @@ public class PairedStats2
    *
    * @param sig the significance level for comparisons
    */
-  public PairedStats2(double sig) {
+  public PairedStatsLegacy(double sig) {
 
     ranker = new Ranker();
     xStats = new Stats();
@@ -381,7 +381,7 @@ public class PairedStats2
   public static void main(String [] args) {
 
     try {
-      PairedStats2 ps = new PairedStats2(0.05);
+      PairedStatsLegacy ps = new PairedStatsLegacy(0.05);
       java.io.LineNumberReader r = new java.io.LineNumberReader(
               new java.io.InputStreamReader(System.in));
       String line;

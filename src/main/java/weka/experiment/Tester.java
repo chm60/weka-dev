@@ -34,9 +34,9 @@ import weka.core.Range;
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision: 8034 $
  */
-public interface Tester
-  extends Serializable {
-  
+public interface Tester {
+
+
   /**
    * returns the name of the testing algorithm
    */

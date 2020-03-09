@@ -261,6 +261,10 @@ public class PairedCorrectedTTester extends PairedTTester implements
     return pairedStats;
   }
 
+  public PairedCorrectedTTester() {
+    this.displayName = "Paired T-Tester (corrected)";
+  }
+
   /**
    * Test the class from the command line.
    * 
@@ -329,7 +333,7 @@ public class PairedCorrectedTTester extends PairedTTester implements
    */
   @Override
   public String getDisplayName() {
-    return "Paired T-Tester (corrected)";
+    return displayName;
   }
 
   /**

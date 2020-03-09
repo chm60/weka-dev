@@ -52,7 +52,6 @@ public class WilcoxonSignedPairedStats extends PairedStats {
             negativeCounter += ranker.checkRank(value);
         }
 
-
     }
 
     /**
@@ -88,6 +87,7 @@ public class WilcoxonSignedPairedStats extends PairedStats {
                 if (count > 1) {
 
                     // TODO: Implement stat table generation here
+                    // if tval > tcrit null hytp is rejected ( that the 2 medians are not the same )
                     differencesProbability = 2*Statistics.normalProbability(z);
                 } else {
                     differencesProbability = 1;
