@@ -14,7 +14,7 @@
  */
 
 /*
- *    PairedCorrectedTTester.java
+ *    StudentTTesterCorrected.java
  *    Copyright (C) 2003-2012 University of Waikato, Hamilton, New Zealand
  *
  */
@@ -38,7 +38,7 @@ import weka.core.TechnicalInformationHandler;
 import weka.core.Utils;
 
 /**
- * Behaves the same as PairedTTester, only it uses the corrected resampled
+ * Behaves the same as StudentTTester, only it uses the corrected resampled
  * t-test statistic.
  * <p/>
  * 
@@ -132,7 +132,7 @@ import weka.core.Utils;
  * @author Richard Kirkby (rkirkby@cs.waikato.ac.nz)
  * @version $Revision: 10203 $
  */
-public class PairedCorrectedTTester extends PairedTTester implements
+public class StudentTTesterCorrected extends PairedTester implements
   TechnicalInformationHandler {
 
   /** for serialization */
@@ -174,8 +174,8 @@ public class PairedCorrectedTTester extends PairedTTester implements
    * @throws Exception if an error occurs
    */
   @Override
-  public PairedStats calculateStatistics(Instance datasetSpecifier,
-    int resultset1Index, int resultset2Index, int comparisonColumn)
+  public TesterStats calculateStatistics(Instance datasetSpecifier,
+                                         int resultset1Index, int resultset2Index, int comparisonColumn)
     throws Exception {
 
     if (m_Instances.attribute(comparisonColumn).type() != Attribute.NUMERIC) {
@@ -227,7 +227,7 @@ public class PairedCorrectedTTester extends PairedTTester implements
       }
       testTrainRatio = totalTestSize / totalTrainSize;
     }
-    PairedStats pairedStats = new PairedStatsCorrected(m_SignificanceLevel,
+    TesterStats testerStats = new StudentStatsCorrected(m_SignificanceLevel,
       testTrainRatio);
 
     for (int k = 0; k < dataset1.size(); k++) {
@@ -255,13 +255,13 @@ public class PairedCorrectedTTester extends PairedTTester implements
 
       double value1 = current1.value(comparisonColumn);
       double value2 = current2.value(comparisonColumn);
-      pairedStats.add(value1, value2);
+      testerStats.add(value1, value2);
     }
-    pairedStats.calculateDerived();
-    return pairedStats;
+    testerStats.calculateDerived();
+    return testerStats;
   }
 
-  public PairedCorrectedTTester() {
+  public StudentTTesterCorrected() {
     this.displayName = "Paired T-Tester (corrected)";
   }
 
@@ -273,7 +273,7 @@ public class PairedCorrectedTTester extends PairedTTester implements
   public static void main(String args[]) {
 
     try {
-      PairedCorrectedTTester tt = new PairedCorrectedTTester();
+      StudentTTesterCorrected tt = new StudentTTesterCorrected();
       String datasetName = Utils.getOption('t', args);
       String compareColStr = Utils.getOption('c', args);
       String baseColStr = Utils.getOption('b', args);

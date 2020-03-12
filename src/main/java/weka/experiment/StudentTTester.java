@@ -14,20 +14,22 @@
  */
 
 /*
- *    PairedTTester.java
+ *    StudentTTester.java
  *    Copyright (C) 1999-2012 University of Waikato, Hamilton, New Zealand
  *
  */
 
 package weka.experiment;
 
-import weka.core.*;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.*;
+
+import weka.core.Attribute;
+import weka.core.Instance;
+import weka.core.Instances;
+import weka.core.Option;
+import weka.core.Utils;
 
 /**
  * Calculates T-Test statistics on data stored in a set of instances.
@@ -100,10 +102,10 @@ import java.util.*;
  * @author Len Trigg (trigg@cs.waikato.ac.nz)
  * @version $Revision: 11542 $
  */
-public class PairedWilcoxonTester extends PairedTester {
+public class StudentTTester extends PairedTester {
 
-  public PairedWilcoxonTester() {
-    this.displayName = "Wilcoxon Signed Rank Test";
+  public StudentTTester() {
+    this.displayName = "Paired T-Tester";
   }
 
   /**
@@ -118,8 +120,8 @@ public class PairedWilcoxonTester extends PairedTester {
    * @throws Exception if an error occurs
    */
   @Override
-  public PairedStats calculateStatistics(Instance datasetSpecifier,
-    int resultset1Index, int resultset2Index, int comparisonColumn)
+  public TesterStats calculateStatistics(Instance datasetSpecifier,
+                                         int resultset1Index, int resultset2Index, int comparisonColumn)
     throws Exception {
 
     if (m_Instances.attribute(comparisonColumn).type() != Attribute.NUMERIC) {
@@ -147,8 +149,7 @@ public class PairedWilcoxonTester extends PairedTester {
         + " and resultset=" + resultset2.templateString());
     }
 
-    WilcoxonSignedPairedStats pairedStats = new WilcoxonSignedPairedStats(m_SignificanceLevel);
-    pairedStats.ranker.setSize(dataset1.size());
+    TesterStats testerStats = new StudentStats(m_SignificanceLevel);
 
     for (int k = 0; k < dataset1.size(); k++) {
       Instance current1 = dataset1.get(k);
@@ -174,33 +175,16 @@ public class PairedWilcoxonTester extends PairedTester {
       }
       double value1 = current1.value(comparisonColumn);
       double value2 = current2.value(comparisonColumn);
-      pairedStats.add(value1, value2);
+      testerStats.add(value1, value2);
     }
-    pairedStats.ranker.computeRank();
-
-    for (int k = 0; k < dataset1.size(); k++) {
-      Instance current1 = dataset1.get(k);
-      Instance current2 = dataset2.get(k);
-
-      double value1 = current1.value(comparisonColumn);
-      double value2 = current2.value(comparisonColumn);
-
-      if(pairedStats.ranker.rankedDifferences == null){
-
-        System.err.println("No ranked values");
-
-      }else{
-
-        pairedStats.computeRankedSum(value1-value2);
-      }
-
-    }
-
-
-    pairedStats.calculateDerived();
-    return pairedStats;
+    testerStats.calculateDerived();
+    // System.err.println("Differences stats:\n" +
+    // testerStats.differencesStats);
+    return testerStats;
 
   }
+
+
 
   /**
    * Test the class from the command line.
@@ -210,8 +194,7 @@ public class PairedWilcoxonTester extends PairedTester {
   public static void main(String args[]) {
 
     try {
-
-      PairedWilcoxonTester tt = new PairedWilcoxonTester();
+      StudentTTester tt = new StudentTTester();
       String datasetName = Utils.getOption('t', args);
       String compareColStr = Utils.getOption('c', args);
       String baseColStr = Utils.getOption('b', args);

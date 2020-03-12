@@ -2,13 +2,13 @@ package weka.experiment;
 
 import weka.core.Statistics;
 
-public class StudentPairedStats extends PairedStats {
+public class StudentStats extends TesterStats {
     /**
-     * Creates a new PairedStats object with the supplied significance level.
+     * Creates a new TesterStats object with the supplied significance level.
      *
      * @param sig the significance level for comparisons
      */
-    public StudentPairedStats(double sig) {
+    public StudentStats(double sig) {
         super(sig);
     }
 
@@ -63,5 +63,51 @@ public class StudentPairedStats extends PairedStats {
         }
     }
 
+    /**
+     * Tests the paired stats object from the command line.
+     * reads line from stdin, expecting two values per line.
+     *
+     * @param args ignored.
+     */
+    public static void main(String [] args) {
+
+        try {
+            StudentStats ps = new StudentStats(0.05);
+            java.io.LineNumberReader r = new java.io.LineNumberReader(
+                    new java.io.InputStreamReader(System.in));
+            String line;
+            while ((line = r.readLine()) != null) {
+                line = line.trim();
+                if (line.equals("") || line.startsWith("@") || line.startsWith("%")) {
+                    continue;
+                }
+                java.util.StringTokenizer s
+                        = new java.util.StringTokenizer(line, " ,\t\n\r\f");
+                int count = 0;
+                double v1 = 0, v2 = 0;
+                while (s.hasMoreTokens()) {
+                    double val = (new Double(s.nextToken())).doubleValue();
+                    if (count == 0) {
+                        v1 = val;
+                    } else if (count == 1) {
+                        v2 = val;
+                    } else {
+                        System.err.println("MSG: Too many values in line \""
+                                + line + "\", skipped.");
+                        break;
+                    }
+                    count++;
+                }
+                if (count == 2) {
+                    ps.add(v1, v2);
+                }
+            }
+            ps.calculateDerived();
+            System.err.println(ps);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            System.err.println(ex.getMessage());
+        }
+    }
 
 }

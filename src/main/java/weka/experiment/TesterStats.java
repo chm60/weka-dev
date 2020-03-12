@@ -14,7 +14,7 @@
  */
 
 /*
- *    PairedStats.java
+ *    TesterStats.java
  *    Copyright (C) 1999-2012 University of Waikato, Hamilton, New Zealand
  *
  */
@@ -24,7 +24,6 @@ package weka.experiment;
 
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
-import weka.core.Statistics;
 import weka.core.Utils;
 
 /**
@@ -33,8 +32,8 @@ import weka.core.Utils;
  * @author Len Trigg (trigg@cs.waikato.ac.nz)
  * @version $Revision: 14314 $
  */
-public class PairedStats
-  implements RevisionHandler, PairedStatsInterface {
+public class TesterStats
+  implements RevisionHandler, TesterStatsInterface {
   
   /** The stats associated with the data in column 1 */
   public Stats xStats;
@@ -72,11 +71,11 @@ public class PairedStats
   protected int m_degreesOfFreedom = 0;
     
   /**
-   * Creates a new PairedStats object with the supplied significance level.
+   * Creates a new TesterStats object with the supplied significance level.
    *
    * @param sig the significance level for comparisons
    */
-  public PairedStats(double sig) {
+  public TesterStats(double sig) {
     xStats = new Stats();
     yStats = new Stats();
     differencesStats = new Stats();
@@ -89,7 +88,7 @@ public class PairedStats
   public void setDegreesOfFreedom(int d) {
    
     if (d <= 0) {
-      throw new IllegalArgumentException("PairedStats: degrees of freedom must be >= 1");
+      throw new IllegalArgumentException("TesterStats: degrees of freedom must be >= 1");
     }
     m_degreesOfFreedom = d;
   }
@@ -243,7 +242,7 @@ public class PairedStats
 
 
   }
-} // PairedStats
+} // TesterStats
 
 
 

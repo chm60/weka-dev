@@ -22,7 +22,7 @@
 package weka.gui.experiment;
 
 import weka.core.Utils;
-import weka.experiment.PairedCorrectedTTester;
+import weka.experiment.StudentTTesterCorrected;
 import weka.experiment.ResultMatrix;
 import weka.experiment.ResultMatrixPlainText;
 import weka.experiment.Tester;
@@ -195,10 +195,10 @@ public class ExperimenterDefaults implements Serializable {
    * 
    * @return the display name
    * @see Tester
-   * @see PairedCorrectedTTester
+   * @see StudentTTesterCorrected
    */
   public final static String getTester() {
-    return get("Tester", new PairedCorrectedTTester().getDisplayName());
+    return get("Tester", new StudentTTesterCorrected().getDisplayName());
   }
 
   /**

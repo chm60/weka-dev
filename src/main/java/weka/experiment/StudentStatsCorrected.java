@@ -14,7 +14,7 @@
  */
 
 /*
- *    PairedStatsCorrected.java
+ *    StudentStatsCorrected.java
  *    Copyright (C) 2003-2012 University of Waikato, Hamilton, New Zealand
  *
  */
@@ -23,7 +23,6 @@ package weka.experiment;
 
 import weka.core.RevisionUtils;
 import weka.core.Statistics;
-import weka.core.Utils;
 
 /**
  * A class for storing stats on a paired comparison. This version is
@@ -38,20 +37,20 @@ import weka.core.Utils;
  * @author Richard Kirkby (rkirkby@cs.waikato.ac.nz)
  * @version $Revision: 14314 $
  */
-public class PairedStatsCorrected
-  extends PairedStats {
+public class StudentStatsCorrected
+  extends TesterStats {
 
   /** The ratio used to correct the significance test */
   protected double m_testTrainRatio;
 
   /**
-   * Creates a new PairedStatsCorrected object with the supplied
+   * Creates a new StudentStatsCorrected object with the supplied
    * significance level and train/test ratio.
    *
    * @param sig the significance level for comparisons
    * @param testTrainRatio the number test examples/training examples
    */
-  public PairedStatsCorrected(double sig, double testTrainRatio) {
+  public StudentStatsCorrected(double sig, double testTrainRatio) {
       
     super(sig);
     m_testTrainRatio = testTrainRatio;
@@ -120,7 +119,7 @@ public class PairedStatsCorrected
   public static void main(String [] args) {
 
     try {
-      PairedStatsCorrected ps = new PairedStatsCorrected(0.05, 1.0 / 9.0);
+      StudentStatsCorrected ps = new StudentStatsCorrected(0.05, 1.0 / 9.0);
       java.io.LineNumberReader r = new java.io.LineNumberReader(
               new java.io.InputStreamReader(System.in));
       String line;
@@ -156,4 +155,5 @@ public class PairedStatsCorrected
       ex.printStackTrace();
       System.err.println(ex.getMessage());
     }
-  }}
+  }
+}

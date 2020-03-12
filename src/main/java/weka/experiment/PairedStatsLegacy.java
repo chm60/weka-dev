@@ -14,7 +14,7 @@
  */
 
 /*
- *    PairedStats.java
+ *    TesterStats.java
  *    Copyright (C) 1999-2012 University of Waikato, Hamilton, New Zealand
  *
  */
@@ -80,7 +80,7 @@ public class PairedStatsLegacy
   protected int m_degreesOfFreedom = 0;
 
   /**
-   * Creates a new PairedStats object with the supplied significance level.
+   * Creates a new TesterStats object with the supplied significance level.
    *
    * @param sig the significance level for comparisons
    */
@@ -99,7 +99,7 @@ public class PairedStatsLegacy
   public void setDegreesOfFreedom(int d) {
 
     if (d <= 0) {
-      throw new IllegalArgumentException("PairedStats: degrees of freedom must be >= 1");
+      throw new IllegalArgumentException("TesterStats: degrees of freedom must be >= 1");
     }
     m_degreesOfFreedom = d;
   }
@@ -418,7 +418,7 @@ public class PairedStatsLegacy
       System.err.println(ex.getMessage());
     }
   }
-} // PairedStats
+} // TesterStats
 
 
 

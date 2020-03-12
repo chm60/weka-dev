@@ -2,7 +2,7 @@ package weka.experiment;
 
 import weka.core.RevisionHandler;
 
-public interface PairedStatsInterface extends RevisionHandler {
+public interface TesterStatsInterface extends RevisionHandler {
 
 
     /**

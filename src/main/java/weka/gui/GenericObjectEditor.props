@@ -359,8 +359,8 @@ weka.classifiers.functions.supportVector.Kernel=\
  
 # Lists the Testers I want to choose from
 weka.experiment.Tester=\
- weka.experiment.PairedCorrectedTTester,\
- weka.experiment.PairedTTester
+ weka.experiment.StudentTTesterCorrected,\
+ weka.experiment.StudentTTester
  
 # Lists the ASSearchs I want to choose from
 weka.attributeSelection.ASSearch=\

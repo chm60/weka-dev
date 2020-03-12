@@ -254,8 +254,8 @@ public class ResultsPanel extends JPanel {
   protected ExtensionFileFilter m_arffFileFilter = new ExtensionFileFilter(
     Instances.FILE_EXTENSION, "Arff data files");
 
-  /** The PairedTTester object. */
-  protected Tester m_TTester = new PairedCorrectedTTester();
+  /** The StudentTTester object. */
+  protected Tester m_TTester = new StudentTTesterCorrected();
 
   /** The instances we're extracting results from. */
   protected Instances m_Instances;
@@ -1403,7 +1403,7 @@ public class ResultsPanel extends JPanel {
     }
 
     if (tester == null) {
-      tester = new PairedCorrectedTTester(); // default
+      tester = new StudentTTesterCorrected(); // default
       m_TesterClasses.setSelectedItem(tester.getDisplayName());
     }
 

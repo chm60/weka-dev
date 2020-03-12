@@ -27,7 +27,7 @@ import weka.core.Instances;
 import weka.core.RevisionHandler;
 import weka.core.RevisionUtils;
 import weka.core.Utils;
-import weka.experiment.PairedStats;
+import weka.experiment.TesterStats;
 
 /**
  * Finds split points using correlation.
@@ -112,9 +112,9 @@ public final class CorrelationSplitInfo implements Cloneable, Serializable,
     int len;
     int low = 0;
     int high = inst.numInstances() - 1;
-    PairedStats full = new PairedStats(0.01);
-    PairedStats leftSubset = new PairedStats(0.01);
-    PairedStats rightSubset = new PairedStats(0.01);
+    TesterStats full = new TesterStats(0.01);
+    TesterStats leftSubset = new TesterStats(0.01);
+    TesterStats rightSubset = new TesterStats(0.01);
     int classIndex = inst.classIndex();
     double leftCorr, rightCorr;
     double leftVar, rightVar, allVar;

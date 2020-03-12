@@ -22,8 +22,6 @@
 
 package weka.experiment;
 
-import java.io.Serializable;
-
 import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Range;
@@ -121,10 +119,10 @@ public interface Tester {
    * @return the results of the paired comparison
    * @exception Exception if an error occurs
    */
-  public PairedStats calculateStatistics(Instance datasetSpecifier,
-					 int resultset1Index,
-					 int resultset2Index,
-					 int comparisonColumn) throws Exception;
+  public TesterStats calculateStatistics(Instance datasetSpecifier,
+                                         int resultset1Index,
+                                         int resultset2Index,
+                                         int comparisonColumn) throws Exception;
   
   /**
    * Creates a key that maps resultset numbers to their descriptions.

@@ -10,41 +10,61 @@ import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.Range;
 
-public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
+public abstract class PairedTester implements OptionHandler, Tester, RevisionHandler {
 
 
     public PairedTester() {
         this.displayName = "Paired Tester";
     }
 
-    /** for serialization */
+    /**
+     * for serialization
+     */
     static final long serialVersionUID = 8370014624008728610L;
 
-    /** The name of the tester */
+    /**
+     * The name of the tester
+     */
     protected String displayName;
 
-    /** The set of instances we will analyse */
+    /**
+     * The set of instances we will analyse
+     */
     protected Instances m_Instances;
 
-    /** The index of the column containing the run number */
+    /**
+     * The index of the column containing the run number
+     */
     protected int m_RunColumn = 0;
 
-    /** The option setting for the run number column (-1 means last) */
+    /**
+     * The option setting for the run number column (-1 means last)
+     */
     protected int m_RunColumnSet = -1;
 
-    /** The option setting for the fold number column (-1 means none) */
+    /**
+     * The option setting for the fold number column (-1 means none)
+     */
     protected int m_FoldColumn = -1;
 
-    /** The column to sort on (-1 means default sorting) */
+    /**
+     * The column to sort on (-1 means default sorting)
+     */
     protected int m_SortColumn = -1;
 
-    /** The sorting of the datasets (according to the sort column) */
+    /**
+     * The sorting of the datasets (according to the sort column)
+     */
     protected int[] m_SortOrder = null;
 
-    /** The sorting of the columns (test base is always first) */
+    /**
+     * The sorting of the columns (test base is always first)
+     */
     protected int[] m_ColOrder = null;
 
-    /** The significance level for comparisons */
+    /**
+     * The significance level for comparisons
+     */
     protected double m_SignificanceLevel = 0.05;
 
     /**
@@ -53,10 +73,14 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
      */
     protected Range m_DatasetKeyColumnsRange = new Range();
 
-    /** An array containing the indexes of just the selected columns */
+    /**
+     * An array containing the indexes of just the selected columns
+     */
     protected int[] m_DatasetKeyColumns;
 
-    /** The list of dataset specifiers */
+    /**
+     * The list of dataset specifiers
+     */
     protected PairedTester.DatasetSpecifiers m_DatasetSpecifiers = new PairedTester.DatasetSpecifiers();
 
     /**
@@ -65,31 +89,49 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
      */
     protected Range m_ResultsetKeyColumnsRange = new Range();
 
-    /** An array containing the indexes of just the selected columns */
+    /**
+     * An array containing the indexes of just the selected columns
+     */
     protected int[] m_ResultsetKeyColumns;
 
-    /** An array containing the indexes of the datasets to display */
+    /**
+     * An array containing the indexes of the datasets to display
+     */
     protected int[] m_DisplayedResultsets = null;
 
-    /** Stores a vector for each resultset holding all instances in each set */
+    /**
+     * Stores a vector for each resultset holding all instances in each set
+     */
     protected ArrayList<PairedTester.Resultset> m_Resultsets = new ArrayList<PairedTester.Resultset>();
 
-    /** Indicates whether the instances have been partitioned */
+    /**
+     * Indicates whether the instances have been partitioned
+     */
     protected boolean m_ResultsetsValid;
 
-    /** Indicates whether standard deviations should be displayed */
+    /**
+     * Indicates whether standard deviations should be displayed
+     */
     protected boolean m_ShowStdDevs = false;
 
-    /** the instance of the class to produce the output. */
+    /**
+     * the instance of the class to produce the output.
+     */
     protected ResultMatrix m_ResultMatrix = new ResultMatrixPlainText();
 
-    /** A list of unique "dataset" specifiers that have been observed */
+    /**
+     * A list of unique "dataset" specifiers that have been observed
+     */
     protected class DatasetSpecifiers implements RevisionHandler, Serializable {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = -9020938059902723401L;
 
-        /** the specifiers that have been observed */
+        /**
+         * the specifiers that have been observed
+         */
         ArrayList<Instance> m_Specifiers = new ArrayList<Instance>();
 
         /**
@@ -155,16 +197,24 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
         }
     }
 
-    /** Utility class to store the instances pertaining to a dataset */
+    /**
+     * Utility class to store the instances pertaining to a dataset
+     */
     protected class Dataset implements RevisionHandler, Serializable {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = -2801397601839433282L;
 
-        /** the template */
+        /**
+         * the template
+         */
         Instance m_Template;
 
-        /** the dataset */
+        /**
+         * the dataset
+         */
         ArrayList<Instance> m_Dataset;
 
         /**
@@ -247,16 +297,24 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
         }
     }
 
-    /** Utility class to store the instances in a resultset */
+    /**
+     * Utility class to store the instances in a resultset
+     */
     protected class Resultset implements RevisionHandler, Serializable {
 
-        /** for serialization. */
+        /**
+         * for serialization.
+         */
         private static final long serialVersionUID = 1543786683821339978L;
 
-        /** the template */
+        /**
+         * the template
+         */
         Instance m_Template;
 
-        /** the dataset */
+        /**
+         * the dataset
+         */
         ArrayList<PairedTester.Dataset> m_Datasets;
 
         /**
@@ -568,7 +626,7 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
      * Checks whether the resultset with the given index shall be displayed.
      *
      * @param index the index of the resultset to check whether it shall be
-     *          displayed
+     *              displayed
      * @return whether the specified resultset is displayed
      */
     @Override
@@ -596,19 +654,19 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
      * resultsets.
      *
      * @param datasetSpecifier the dataset specifier
-     * @param resultset1Index the index of the first resultset
-     * @param resultset2Index the index of the second resultset
+     * @param resultset1Index  the index of the first resultset
+     * @param resultset2Index  the index of the second resultset
      * @param comparisonColumn the column containing values to compare
      * @return the results of the paired comparison
      * @throws Exception if an error occurs
      */
     @Override
-    public PairedStats calculateStatistics(Instance datasetSpecifier,
+    public TesterStats calculateStatistics(Instance datasetSpecifier,
                                            int resultset1Index, int resultset2Index, int comparisonColumn)
             throws Exception {
 
 
-        PairedStats stats = new PairedStats(5);
+        TesterStats stats = new TesterStats(5);
 
         return stats;
 
@@ -676,9 +734,9 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
      * datsets where one resultset outperforms the other.
      *
      * @param comparisonColumn the index of the comparison column
-     * @param nonSigWin for storing the non-significant wins
+     * @param nonSigWin        for storing the non-significant wins
      * @return a 2d array where element [i][j] is the number of times resultset j
-     *         performed significantly better than resultset i.
+     * performed significantly better than resultset i.
      * @throws Exception if an error occurs
      */
     @Override
@@ -695,17 +753,17 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
                 System.err.flush();
                 for (int k = 0; k < getNumDatasets(); k++) {
                     try {
-                        PairedStats pairedStats = calculateStatistics(
+                        TesterStats testerStats = calculateStatistics(
                                 m_DatasetSpecifiers.specifier(k), i, j, comparisonColumn);
-                        if (pairedStats.differencesSignificance < 0) {
+                        if (testerStats.differencesSignificance < 0) {
                             win[i][j]++;
-                        } else if (pairedStats.differencesSignificance > 0) {
+                        } else if (testerStats.differencesSignificance > 0) {
                             win[j][i]++;
                         }
 
-                        if (pairedStats.differencesStats.mean < 0) {
+                        if (testerStats.differencesStats.mean < 0) {
                             nonSigWin[i][j]++;
-                        } else if (pairedStats.differencesStats.mean > 0) {
+                        } else if (testerStats.differencesStats.mean > 0) {
                             nonSigWin[j][i]++;
                         }
                     } catch (Exception ex) {
@@ -781,7 +839,7 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
      * Creates a comparison table where a base resultset is compared to the other
      * resultsets. Results are presented for every dataset.
      *
-     * @param baseResultset the index of the base resultset
+     * @param baseResultset    the index of the base resultset
      * @param comparisonColumn the index of the column to compare over
      * @return the comparison table string
      * @throws Exception if an error occurs
@@ -804,12 +862,12 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
                     continue;
                 }
                 try {
-                    PairedStats pairedStats = calculateStatistics(
+                    TesterStats testerStats = calculateStatistics(
                             m_DatasetSpecifiers.specifier(i), baseResultset, j,
                             comparisonColumn);
-                    if (!Double.isInfinite(pairedStats.yStats.mean)
-                            && !Double.isNaN(pairedStats.yStats.mean)) {
-                        double width = ((Math.log(Math.abs(pairedStats.yStats.mean)) / Math
+                    if (!Double.isInfinite(testerStats.yStats.mean)
+                            && !Double.isNaN(testerStats.yStats.mean)) {
+                        double width = ((Math.log(Math.abs(testerStats.yStats.mean)) / Math
                                 .log(10)) + 1);
                         if (width > maxWidthMean) {
                             maxWidthMean = (int) width;
@@ -826,9 +884,9 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
                         }
                     }
 
-                    if (m_ShowStdDevs && !Double.isInfinite(pairedStats.yStats.stdDev)
-                            && !Double.isNaN(pairedStats.yStats.stdDev)) {
-                        double width = ((Math.log(Math.abs(pairedStats.yStats.stdDev)) / Math
+                    if (m_ShowStdDevs && !Double.isInfinite(testerStats.yStats.stdDev)
+                            && !Double.isNaN(testerStats.yStats.stdDev)) {
+                        double width = ((Math.log(Math.abs(testerStats.yStats.stdDev)) / Math
                                 .log(10)) + 1);
                         if (width > maxWidthStdDev) {
                             maxWidthStdDev = (int) width;
@@ -881,23 +939,23 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
             for (int j = 0; j < getNumResultsets(); j++) {
                 try {
                     // calc stats
-                    PairedStats pairedStats = calculateStatistics(
+                    TesterStats testerStats = calculateStatistics(
                             m_DatasetSpecifiers.specifier(i), baseResultset, j,
                             comparisonColumn);
 
                     // count
-                    m_ResultMatrix.setCount(i, pairedStats.count);
+                    m_ResultMatrix.setCount(i, testerStats.count);
 
                     // mean
-                    m_ResultMatrix.setMean(j, i, pairedStats.yStats.mean);
+                    m_ResultMatrix.setMean(j, i, testerStats.yStats.mean);
 
                     // std dev
-                    m_ResultMatrix.setStdDev(j, i, pairedStats.yStats.stdDev);
+                    m_ResultMatrix.setStdDev(j, i, testerStats.yStats.stdDev);
 
                     // significance
-                    if (pairedStats.differencesSignificance < 0) {
+                    if (testerStats.differencesSignificance < 0) {
                         m_ResultMatrix.setSignificance(j, i, ResultMatrix.SIGNIFICANCE_WIN);
-                    } else if (pairedStats.differencesSignificance > 0) {
+                    } else if (testerStats.differencesSignificance > 0) {
                         m_ResultMatrix
                                 .setSignificance(j, i, ResultMatrix.SIGNIFICANCE_LOSS);
                     } else {
@@ -985,7 +1043,7 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
     /**
      * Parses a given list of options.
      * <p/>
-     *
+     * <p>
      * <!-- options-start --> Valid options are:
      * <p/>
      *
@@ -1047,7 +1105,7 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
      * -gnuplot
      *  Produce table comparisons output suitable for GNUPlot
      * </pre>
-     *
+     * <p>
      * <!-- options-end -->
      *
      * @param options an array containing options to set.
@@ -1130,7 +1188,8 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
     @Override
     public String[] getOptions() {
 
-        Vector<String> options = new Vector<String>();;
+        Vector<String> options = new Vector<String>();
+        ;
 
         if (!getResultsetKeyColumns().getRanges().equals("")) {
             options.add("-G");
@@ -1403,5 +1462,4 @@ public class PairedTester implements OptionHandler, Tester, RevisionHandler  {
     public String getRevision() {
         return RevisionUtils.extract("$Revision: 11542 $");
     }
-
 }
