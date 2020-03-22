@@ -40,7 +40,7 @@ public class WilcoxonSignedRankrStats extends TesterStats {
         xySum += value1 * value2;
 
 
-        ranker.add(value1, value2, (int)count);
+        ranker.add(value1, value2, count);
         count ++;
 
     }
@@ -72,24 +72,32 @@ public class WilcoxonSignedRankrStats extends TesterStats {
 
         if (differencesStats.stdDev > 0) {
 
-            double tval = Math.min(negativeCounter, positiveCounter);
+            int tval = (int)Math.floor(Math.min(negativeCounter, positiveCounter));
 
             // Used to generate z value as a place holder
-            double mn = count * (count+1) *0.25;
-            double se = Math.sqrt((count * (count + 1) * (2*count + 1) )/24 );
-            double sgn = ((tval-mn) > 0) ? 1 : -1;
-            double d = 0.5 * sgn;
-            double z = (tval - mn - d) / se;
+//            double mn = count * (count+1) *0.25;
+//            double se = Math.sqrt((count * (count + 1) * (2*count + 1) )/24 );
+//            double sgn = ((tval-mn) > 0) ? 1 : -1;
+//            double d = 0.5 * sgn;
+//            double z = (tval - mn - d) / se;
 
             if (m_degreesOfFreedom >= 1) {
-                differencesProbability = 2 * Statistics.normalProbability(Math.abs(z));
+                //differencesProbability = 2 * Statistics.normalProbability(Math.abs(z));
             } else {
-                if (count > 1) {
+                if (count > 20) {
 
-                    // TODO: Implement stat table generation here
-                    // if tval > tcrit null hytp is rejected ( that the 2 medians are not the same )
-                    differencesProbability = 2*Statistics.normalProbability(z);
-                } else {
+                    // TODO: Use normal distribution
+                //    differencesProbability = 2*Statistics.normalProbability(z);
+                } else if(count > 3){
+
+                    for (int i = 0; i < tval+1; i++) {
+                        differencesProbability += StatSig.ProbabilityStatistic(tval, count);
+                    }
+
+                    differencesProbability = differencesProbability / Math.pow(2,count);
+                }
+
+                else {
                     differencesProbability = 1;
                 }
             }

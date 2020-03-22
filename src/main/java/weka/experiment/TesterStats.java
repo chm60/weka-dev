@@ -54,7 +54,7 @@ public class TesterStats
   public double xySum;
   
   /** The number of data points seen */
-  public double count;
+  public int count;
   
   /**
    * A significance indicator:
