@@ -25,7 +25,8 @@ import weka.core.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * Calculates T-Test statistics on data stored in a set of instances.
@@ -98,10 +99,10 @@ import java.util.*;
  * @author Len Trigg (trigg@cs.waikato.ac.nz)
  * @version $Revision: 11542 $
  */
-public class WilcoxonSignedRankTester extends PairedTester {
+public class WilcoxonSumRankTester extends PairedTester {
 
-  public WilcoxonSignedRankTester() {
-    this.displayName = "Wilcoxon Signed Rank Test";
+  public WilcoxonSumRankTester() {
+    this.displayName = "Wilcoxon Sum Rank Test";
   }
 
   /**
@@ -132,6 +133,7 @@ public class WilcoxonSignedRankTester extends PairedTester {
     Resultset resultset2 = m_Resultsets.get(resultset2Index);
     ArrayList<Instance> dataset1 = resultset1.dataset(datasetSpecifier);
     ArrayList<Instance> dataset2 = resultset2.dataset(datasetSpecifier);
+
     String datasetName = templateString(datasetSpecifier);
     if (dataset1 == null) {
       throw new Exception("No results for dataset=" + datasetName
@@ -145,12 +147,14 @@ public class WilcoxonSignedRankTester extends PairedTester {
         + " and resultset=" + resultset2.templateString());
     }
 
-    WilcoxonSignedRankStats pairedStats = new WilcoxonSignedRankStats(m_SignificanceLevel);
-    pairedStats.ranker.setSize(dataset1.size());
+    WilcoxonSumRankStats pairedStats = new WilcoxonSumRankStats(m_SignificanceLevel);
+    pairedStats.ranker.setSize(dataset1.size()*2);
 
     for (int k = 0; k < dataset1.size(); k++) {
+
       Instance current1 = dataset1.get(k);
       Instance current2 = dataset2.get(k);
+
       if (current1.isMissing(comparisonColumn)) {
         System.err.println("Instance has missing value in comparison "
           + "column!\n" + current1);
@@ -174,6 +178,7 @@ public class WilcoxonSignedRankTester extends PairedTester {
       double value2 = current2.value(comparisonColumn);
       pairedStats.add(value1, value2);
     }
+    // computes rank hash map for comparisons below
     pairedStats.ranker.computeRank();
 
     for (int k = 0; k < dataset1.size(); k++) {
@@ -189,7 +194,7 @@ public class WilcoxonSignedRankTester extends PairedTester {
 
       }else{
 
-        pairedStats.computeRankedSum(value1-value2);
+        pairedStats.computeRankedSum(value1, value2);
       }
 
     }
@@ -209,7 +214,7 @@ public class WilcoxonSignedRankTester extends PairedTester {
 
     try {
 
-      WilcoxonSignedRankTester tt = new WilcoxonSignedRankTester();
+      WilcoxonSumRankTester tt = new WilcoxonSumRankTester();
       String datasetName = Utils.getOption('t', args);
       String compareColStr = Utils.getOption('c', args);
       String baseColStr = Utils.getOption('b', args);

@@ -2,7 +2,7 @@ package weka.experiment;
 
 import weka.core.Statistics;
 
-public class WilcoxonSignedRankrStats extends TesterStats {
+public class WilcoxonSignedRankStats extends TesterStats {
 
     /** Ranks the paried stats, specific for the wilcoxon test */
     public Ranker ranker;
@@ -18,7 +18,7 @@ public class WilcoxonSignedRankrStats extends TesterStats {
      *
      * @param sig the significance level for comparisons
      */
-    public WilcoxonSignedRankrStats(double sig) {
+    public WilcoxonSignedRankStats(double sig) {
 
         super(sig);
         ranker = new Ranker();
@@ -70,37 +70,36 @@ public class WilcoxonSignedRankrStats extends TesterStats {
                     / ((count - 1) * xStats.stdDev * yStats.stdDev);
         }
 
-        if (differencesStats.stdDev > 0) {
+       if (differencesStats.stdDev > 0) {
 
-            int tval = (int)Math.floor(Math.min(negativeCounter, positiveCounter));
 
-            // Used to generate z value as a place holder
-//            double mn = count * (count+1) *0.25;
-//            double se = Math.sqrt((count * (count + 1) * (2*count + 1) )/24 );
-//            double sgn = ((tval-mn) > 0) ? 1 : -1;
-//            double d = 0.5 * sgn;
-//            double z = (tval - mn - d) / se;
+            double tvalP = differencesStats.mean
+                    * Math.sqrt(count)
+                    / differencesStats.stdDev;
 
-            if (m_degreesOfFreedom >= 1) {
-                //differencesProbability = 2 * Statistics.normalProbability(Math.abs(z));
-            } else {
                 if (count > 20) {
 
-                    // TODO: Use normal distribution
-                //    differencesProbability = 2*Statistics.normalProbability(z);
+                    double Wstat = Math.floor(Math.min(negativeCounter, positiveCounter));
+                    double mn = count*(count+1)/4;
+                    double stdDev = Math.sqrt((count*(count+1)*(2*count+1))/24);
+                    double z = (Wstat - mn) / stdDev;
+                    differencesProbability = Statistics.normalProbability(z);
+
                 } else if(count > 3){
 
-                    for (int i = 0; i < tval+1; i++) {
-                        differencesProbability += StatSig.ProbabilityStatistic(tval, count);
+                    int Wstat = (int)Math.ceil(Math.min(negativeCounter, positiveCounter));
+
+                    for (int i = 0; i < Wstat+1; i++) {
+                        differencesProbability += ProbabilityDistribution.WilcoxonSignedRank(Wstat, count);
                     }
 
                     differencesProbability = differencesProbability / Math.pow(2,count);
                 }
 
                 else {
-                    differencesProbability = 1;
+                    differencesProbability = 0.0;
                 }
-            }
+
         } else {
             if (differencesStats.sumSq == 0) {
                 differencesProbability = 1.0;
@@ -127,7 +126,7 @@ public class WilcoxonSignedRankrStats extends TesterStats {
     public static void main(String [] args) {
 
         try {
-            WilcoxonSignedRankrStats ps = new WilcoxonSignedRankrStats(0.05);
+            WilcoxonSignedRankStats ps = new WilcoxonSignedRankStats(0.05);
             java.io.LineNumberReader r = new java.io.LineNumberReader(
                     new java.io.InputStreamReader(System.in));
             String line;
