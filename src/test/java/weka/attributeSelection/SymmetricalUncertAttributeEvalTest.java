@@ -36,7 +36,7 @@ public class SymmetricalUncertAttributeEvalTest
     super(name);  
   }
 
-  /** Creates a default Ranker */
+  /** Creates a default RankerTest */
   public ASSearch getSearch() {
     return new Ranker();
   }

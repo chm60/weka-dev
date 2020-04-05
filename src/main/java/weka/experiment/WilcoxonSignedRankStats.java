@@ -86,26 +86,26 @@ public class WilcoxonSignedRankStats extends TesterStats {
            /**
             * Use a normal distribution rather than the W distribution to asses for significance when there are more than 20 pairs
             */
-           if (count > 20) {
+           if (ranker.returnPairCount() > 20) {
 
                     double Wstat = Math.floor(Math.min(negativeCounter, positiveCounter));
-                    double mn = count*(count+1)/4;
-                    double stdDev = Math.sqrt((count*(count+1)*(2*count+1))/24);
+                    double mn = ranker.returnPairCount()*(ranker.returnPairCount()+1)/4;
+                    double stdDev = Math.sqrt((ranker.returnPairCount()*(ranker.returnPairCount()+1)*(2*ranker.returnPairCount()+1))/24);
                     double z = (Wstat - mn) / stdDev;
                     differencesProbability = Statistics.normalProbability(z);
 
                /**
                 * When more there are less than 20 pairs use a Wsum distribution to asses for significance, down to a lower limit of 3.
                  */
-           } else if(count > 3){
+           } else if(ranker.returnPairCount() > 3){
 
                     int Wstat = (int)Math.ceil(Math.min(negativeCounter, positiveCounter));
 
                     for (int i = 0; i < Wstat+1; i++) {
-                        differencesProbability += ProbabilityDistribution.WilcoxonSignedRank(Wstat, count);
+                        differencesProbability += ProbabilityDistribution.WilcoxonSignedRank(i, ranker.returnPairCount());
                     }
 
-                    differencesProbability = differencesProbability / Math.pow(2,count);
+                    differencesProbability = 2*(differencesProbability / Math.pow(2,ranker.returnPairCount()));
                 }
 
                 else {

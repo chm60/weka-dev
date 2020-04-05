@@ -7,10 +7,13 @@ package weka.experiment;
 
 import weka.core.pmml.Array;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,6 +23,8 @@ public class Ranker {
     HashMap<Double, Double> rankedDifferences = new HashMap<Double, Double>();
 
     Double[] DifferenceStatistics;
+
+    int pair_count = 0;
 
     /**
      * Sets the size of the input array
@@ -38,7 +43,10 @@ public class Ranker {
 
     public void add(double val1, double val2, int index){
 
-        DifferenceStatistics[index] = Math.abs(val1-val2);
+        BigDecimal arithmetic1 = new BigDecimal(val1, MathContext.DECIMAL64);
+        BigDecimal arithmetic2 = new BigDecimal(val2, MathContext.DECIMAL64);
+
+        DifferenceStatistics[index] = val1 > val2 ? (arithmetic1.subtract(arithmetic2).doubleValue()) : (arithmetic2.subtract(arithmetic1).doubleValue());
     }
 
     /**
@@ -69,6 +77,8 @@ public class Ranker {
             rank = rank + value.getValue();
             int numberUniques = value.getValue();
             rankedDifferences.put(value.getKey() , (double) ((((rank-numberUniques) + 1)*numberUniques) + ((numberUniques-1)*(numberUniques)) / 2) / numberUniques);
+            pair_count = (int) Math.ceil(rankedDifferences.get(value.getKey()));
+
         }
     }
 
@@ -85,6 +95,12 @@ public class Ranker {
         }
 
         return rankedDifferences.get(Math.abs(value));
+
+    }
+
+    public int returnPairCount(){
+
+        return pair_count;
 
     }
 

@@ -25,6 +25,8 @@ import weka.core.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.*;
 
 /**
@@ -192,7 +194,10 @@ public class WilcoxonSignedRankTester extends PairedTester {
 
       }else{
 
-        pairedStats.computeRankedSum(value1-value2);
+        BigDecimal arithmetic1 = new BigDecimal(value1, MathContext.DECIMAL64);
+        BigDecimal arithmetic2 = new BigDecimal(value2, MathContext.DECIMAL64);
+
+        pairedStats.computeRankedSum(arithmetic1.subtract(arithmetic2).doubleValue());
       }
 
     }

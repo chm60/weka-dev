@@ -18,13 +18,13 @@ public class ProbabilityDistribution {
      * @param Wstat W stat from the Wilcoxon Sum Rank test
      * @param n size of group 1
      * @param m size of group 2
-     * @return cumulative occurrence weight for given W stat
+     * @return probability occurrence weight for given W stat
      */
     protected static int WilcoxonSumRank(double Wstat, double n, double m){
 
         double min = (n*(n+1)/2);
 
-        if(Wstat>Math.pow(n, 2)+min | Wstat < min){
+        if(Wstat>(n*m)+min | Wstat < min){
             return 0;
         }else if(n==1 | m==1){
             return 1;
@@ -47,25 +47,24 @@ public class ProbabilityDistribution {
         // need more than 3 sets of pairs to find out WStat currently here as a fail safe
         if(pair_count > 3){
 
-            if(WStat-pair_count < 0){
-                return 0;
-            }
+            if(WStat<0) return 0;
 
 
             if(WStat <= WTotal){
 
-                return (WStat - pair_count) < 0 ? WilcoxonSignedRank(WStat-1, pair_count) : WilcoxonSignedRank( WStat-pair_count, pair_count-1);
+                return (WStat - pair_count) == 0 ? WilcoxonSignedRank(WStat, pair_count-1) + 1 : WilcoxonSignedRank(WStat, pair_count-1) + WilcoxonSignedRank( WStat-pair_count, pair_count-1);
 
             }
         }
-
-        if(WStat<=6){
-            return wilcoxon_signed_rank_distribution[WStat];
-        }
-        else {
+        if(WStat<0 ){
             return 0;
+
+        }else if (WStat <= 6 ){
+
+        return wilcoxon_signed_rank_distribution[WStat];
         }
 
+        return 0;
 
     }
 

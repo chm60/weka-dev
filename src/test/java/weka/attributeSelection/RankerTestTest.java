@@ -23,20 +23,20 @@ import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
- * Tests Ranker. Run from the command line with:<p/>
- * java weka.attributeSelection.RankerTest
+ * Tests RankerTest. Run from the command line with:<p/>
+ * java weka.attributeSelection.RankerTestTest
  *
  * @author FracPete (fracpete at waikato dot ac dot nz)
  * @version $Revision: 8034 $
  */
-public class RankerTest 
+public class RankerTestTest
   extends AbstractSearchTest {
 
-  public RankerTest(String name) { 
+  public RankerTestTest(String name) {
     super(name);  
   }
 
-  /** Creates a default Ranker */
+  /** Creates a default RankerTest */
   public ASSearch getSearch() {
     return new Ranker();
   }
@@ -47,7 +47,7 @@ public class RankerTest
   }
 
   public static Test suite() {
-    return new TestSuite(RankerTest.class);
+    return new TestSuite(RankerTestTest.class);
   }
 
   public static void main(String[] args){
