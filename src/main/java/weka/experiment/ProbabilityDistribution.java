@@ -1,3 +1,8 @@
+/**
+ * @author Len Trigg (trigg@cs.waikato.ac.nz)  Chris Machala (chm60@aber.ac.uk)
+ */
+
+
 package weka.experiment;
 
 public class ProbabilityDistribution {

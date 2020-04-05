@@ -1,3 +1,8 @@
+/**
+ * @author Chris Machala (chm60@aber.ac.uk)
+ */
+
+
 package weka.experiment;
 
 import weka.core.pmml.Array;
