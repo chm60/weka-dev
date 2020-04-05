@@ -105,7 +105,7 @@ public class WilcoxonSignedRankStats extends TesterStats {
                         differencesProbability += ProbabilityDistribution.WilcoxonSignedRank(Wstat, count);
                     }
 
-                    differencesProbability = differencesProbability / Math.pow(2,count);
+                    differencesProbability = 2*(differencesProbability / Math.pow(2,count));
                 }
 
                 else {

@@ -124,7 +124,7 @@ public class WilcoxonSumRankStats extends TesterStats {
                         differencesProbability += ProbabilityDistribution.WilcoxonSumRank(Wstat, xStats.count, yStats.count);
                     }
 
-                    differencesProbability = (differencesProbability / distributionTotal)*2;
+                    differencesProbability = 2*(differencesProbability / distributionTotal);
                 }
 
                 else {
