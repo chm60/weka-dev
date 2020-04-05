@@ -1,3 +1,7 @@
+/**
+ * @author Len Trigg (trigg@cs.waikato.ac.nz) Chris Machala (chm60@aber.ac.uk)
+ */
+
 package weka.experiment;
 
 import weka.core.Statistics;
@@ -6,13 +10,13 @@ import java.util.stream.LongStream;
 
 public class WilcoxonSumRankStats extends TesterStats {
 
-    /** Ranks the paried stats, specific for the wilcoxon test */
+    /** Ranks the paried stats, used for the Wilcoxon Signed and Sum test */
     public Ranker ranker;
 
-    /** The counter for the negative group */
+    /** The summed rank value for the sample x */
     public double X;
 
-    /** The counter for the positive group */
+    /** The summed rank value for the sample y */
     public double Y;
 
     /**
@@ -29,19 +33,16 @@ public class WilcoxonSumRankStats extends TesterStats {
 
 
     /**
-     * Add an observed pair of values for wilcoxon test.
+     * Add an observed pair of values for wilcoxon sum rank test, also add the values to the ranker instance.
      *
      * @param value1 the value from column 1
      * @param value2 the value from column 2
      */
     public void add(double value1, double value2) {
 
-
-        //Todo: possibly redundant
         xStats.add(value1);
         yStats.add(value2);
         differencesStats.add(value1 - value2);
-//        xySum += value1 * value2;
 
         ranker.add(value1, 0, count);
         count ++;
@@ -50,6 +51,12 @@ public class WilcoxonSumRankStats extends TesterStats {
 
     }
 
+    /**
+     * Add rank value to appropriate variable
+     * @param value1 variable to return correct rank value to sample X
+     * @param value2 variable to return correct rank value to sample Y
+     */
+
     public void computeRankedSum(double value1, double value2){
 
             X+= ranker.checkRank(value1);
@@ -57,15 +64,21 @@ public class WilcoxonSumRankStats extends TesterStats {
 
     }
 
+    /**
+     * Method to calculate factorial of a given number
+     * (1x2x3x4x.....n)
+     * @param n value we want the factorial of
+     * @return factorial of n
+     */
+
     public long factorial(long n){
 
        return LongStream.rangeClosed( 1, (long) n ).reduce(1, ( long a, long b ) -> a * b);
 
-
     }
 
     /**
-     * Calculates the derived statistics for wilcoxon (significance etc).
+     * Calculates the derived statistics for Wilcoxon sum rank (significance etc).
      */
     public void calculateDerived() {
 
@@ -83,7 +96,7 @@ public class WilcoxonSumRankStats extends TesterStats {
        if (differencesStats.stdDev > 0) {
 
 
-            double tvalP = differencesStats.mean
+            double tval = differencesStats.mean
                     * Math.sqrt(count)
                     / differencesStats.stdDev;
 

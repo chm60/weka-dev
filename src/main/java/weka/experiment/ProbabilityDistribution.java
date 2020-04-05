@@ -8,6 +8,13 @@ public class ProbabilityDistribution {
 
     protected static final int[] wilcoxon_signed_rank_distribution = {1, 1, 1, 2, 1, 1, 1};
 
+    /**
+     * Generates Probability occurrence tree for a given rank in Wilcoxon sum rank, uses recursion to calculate the level below the rank in question
+     * @param Wstat W stat from the Wilcoxon Sum Rank test
+     * @param n size of group 1
+     * @param m size of group 2
+     * @return cumulative occurrence weight for given W stat
+     */
     protected static int WilcoxonSumRank(double Wstat, double n, double m){
 
         double min = (n*(n+1)/2);
@@ -22,10 +29,10 @@ public class ProbabilityDistribution {
     }
 
     /**
-     * Generates probabilty occurence tree for a given rank, uses recursion to calculate the level below the rank in question
+     * Generates Probability occurrence tree for a given rank in Wilcoxon signed rank, uses recursion to calculate the level below the rank in question
      * @param WStat W stat from the Wilcoxon Signed Rank test
-     * @param pair_count # of pairs in the dataset
-     * @return probability occurence of a given rank total
+     * @param pair_count number of pairs in the dataset
+     * @return probability occurrence of a given rank total
      */
     protected static int WilcoxonSignedRank(int WStat, int pair_count){
 

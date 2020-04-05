@@ -28,7 +28,7 @@ import java.io.FileReader;
 import java.util.*;
 
 /**
- * Calculates T-Test statistics on data stored in a set of instances.
+ * Calculates Wilcoxon Signed Rank statistics on data stored in a set of instances.
  * <p/>
  * 
  * <!-- options-start --> Valid options are:
@@ -95,7 +95,7 @@ import java.util.*;
  * 
  * <!-- options-end -->
  * 
- * @author Len Trigg (trigg@cs.waikato.ac.nz)
+ * @author Len Trigg (trigg@cs.waikato.ac.nz) Chris Machala (chm60@aber.ac.uk)
  * @version $Revision: 11542 $
  */
 public class WilcoxonSignedRankTester extends PairedTester {
@@ -105,7 +105,7 @@ public class WilcoxonSignedRankTester extends PairedTester {
   }
 
   /**
-   * Computes a paired t-test comparison for a specified dataset between two
+   * Computes a paired Wilcoxon Signed Rank Test comparison for a specified dataset between two
    * resultsets.
    * 
    * @param datasetSpecifier the dataset specifier
@@ -130,9 +130,12 @@ public class WilcoxonSignedRankTester extends PairedTester {
 
     Resultset resultset1 = m_Resultsets.get(resultset1Index);
     Resultset resultset2 = m_Resultsets.get(resultset2Index);
+
     ArrayList<Instance> dataset1 = resultset1.dataset(datasetSpecifier);
     ArrayList<Instance> dataset2 = resultset2.dataset(datasetSpecifier);
+
     String datasetName = templateString(datasetSpecifier);
+
     if (dataset1 == null) {
       throw new Exception("No results for dataset=" + datasetName
         + " for resultset=" + resultset1.templateString());
@@ -249,7 +252,6 @@ public class WilcoxonSignedRankTester extends PairedTester {
       } else if (summaryOnly) {
         System.out.println(tt.multiResultsetSummary(compareCol));
       } else {
-        //System.out.println(tt.resultsetKey());
         if (baseColStr.length() == 0) {
           for (int i = 0; i < tt.getNumResultsets(); i++) {
             if (!tt.displayResultset(i)) {

@@ -1,10 +1,13 @@
+/**
+ * @author Len Trigg (trigg@cs.waikato.ac.nz) Chris Machala (chm60@aber.ac.uk)
+ */
 package weka.experiment;
 
 import weka.core.Statistics;
 
 public class WilcoxonSignedRankStats extends TesterStats {
 
-    /** Ranks the paried stats, specific for the wilcoxon test */
+    /** Ranks the paried stats, used for the Wilcoxon Signed and Sum test */
     public Ranker ranker;
 
     /** The counter for the negative group */
@@ -27,7 +30,7 @@ public class WilcoxonSignedRankStats extends TesterStats {
 
 
     /**
-     * Add an observed pair of values for wilcoxon test.
+     * Add an observed pair of values for Wilcoxon signed rank test.
      *
      * @param value1 the value from column 1
      * @param value2 the value from column 2
@@ -39,12 +42,15 @@ public class WilcoxonSignedRankStats extends TesterStats {
         differencesStats.add(value1 - value2);
         xySum += value1 * value2;
 
-
         ranker.add(value1, value2, count);
         count ++;
 
     }
 
+    /**
+     * Assigns rank value to appropriate signed variable
+     * @param value the rank value
+     */
     public void computeRankedSum(double value){
         if (value > 0){
             positiveCounter += ranker.checkRank(value);
@@ -55,7 +61,7 @@ public class WilcoxonSignedRankStats extends TesterStats {
     }
 
     /**
-     * Calculates the derived statistics for wilcoxon (significance etc).
+     * Calculates the derived statistics for Wilcoxon signed rank (significance etc).
      */
     public void calculateDerived() {
 
@@ -73,11 +79,14 @@ public class WilcoxonSignedRankStats extends TesterStats {
        if (differencesStats.stdDev > 0) {
 
 
-            double tvalP = differencesStats.mean
+            double tval = differencesStats.mean
                     * Math.sqrt(count)
                     / differencesStats.stdDev;
 
-                if (count > 20) {
+           /**
+            * Use a normal distribution rather than the W distribution to asses for significance when there are more than 20 pairs
+            */
+           if (count > 20) {
 
                     double Wstat = Math.floor(Math.min(negativeCounter, positiveCounter));
                     double mn = count*(count+1)/4;
@@ -85,7 +94,10 @@ public class WilcoxonSignedRankStats extends TesterStats {
                     double z = (Wstat - mn) / stdDev;
                     differencesProbability = Statistics.normalProbability(z);
 
-                } else if(count > 3){
+               /**
+                * When more there are less than 20 pairs use a Wsum distribution to asses for significance, down to a lower limit of 3.
+                 */
+           } else if(count > 3){
 
                     int Wstat = (int)Math.ceil(Math.min(negativeCounter, positiveCounter));
 

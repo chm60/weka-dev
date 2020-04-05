@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 /**
- * Calculates T-Test statistics on data stored in a set of instances.
+ * Calculates Wilcoxon sum rank statistics on data stored in a set of instances.
  * <p/>
  * 
  * <!-- options-start --> Valid options are:
@@ -96,7 +96,7 @@ import java.util.Enumeration;
  * 
  * <!-- options-end -->
  * 
- * @author Len Trigg (trigg@cs.waikato.ac.nz)
+ * @author Len Trigg (trigg@cs.waikato.ac.nz) Chris Machala (chm60@aber.ac.uk)
  * @version $Revision: 11542 $
  */
 public class WilcoxonSumRankTester extends PairedTester {
@@ -106,14 +106,14 @@ public class WilcoxonSumRankTester extends PairedTester {
   }
 
   /**
-   * Computes a paired t-test comparison for a specified dataset between two
+   * Computes a un-paired Wilcoxon Sum Rank test comparison for a specified dataset between two
    * resultsets.
    * 
    * @param datasetSpecifier the dataset specifier
    * @param resultset1Index the index of the first resultset
    * @param resultset2Index the index of the second resultset
    * @param comparisonColumn the column containing values to compare
-   * @return the results of the paired comparison
+   * @return the results of the un-paired comparison
    * @throws Exception if an error occurs
    */
   @Override

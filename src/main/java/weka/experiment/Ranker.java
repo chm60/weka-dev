@@ -18,9 +18,8 @@ public class Ranker {
 
     /**
      * Sets the size of the input array
-     * @param size
+     * @param size number of pairs or sample elements
      */
-
     public void setSize(int size){
         DifferenceStatistics = new Double[size];
     }
@@ -53,8 +52,6 @@ public class Ranker {
      */
 
     public void computeRank(){
-        //Arrays.sort(DifferenceStatistics);
-
         TreeMap<Double, Integer> unique = new TreeMap<Double, Integer>(valUnique());
 
         int rank = 0;
