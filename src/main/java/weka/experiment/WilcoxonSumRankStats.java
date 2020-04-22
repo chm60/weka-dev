@@ -42,7 +42,8 @@ public class WilcoxonSumRankStats extends TesterStats {
 
         xStats.add(value1);
         yStats.add(value2);
-        differencesStats.add(value1 - value2);
+        differencesStats.add(value1);
+        differencesStats.add(value2);
 
         ranker.add(value1, 0, count);
         count ++;
@@ -100,12 +101,11 @@ public class WilcoxonSumRankStats extends TesterStats {
                     * Math.sqrt(count)
                     / differencesStats.stdDev;
 
-                if (count > 19) {
+                if (count > 20) {
 
                     double Wstat = Math.floor(Math.min(X, Y));
-                    double mn = (double) (count*(count+1)/4);
-                    double stdDev = Math.sqrt((double)(count*(count+1)*(2*count+1))/24);
-                    double z = (Wstat - mn) / stdDev;
+                    double mn = differencesStats.sum / differencesStats.count;
+                    double z = (Wstat - mn) / differencesStats.stdDev;
                     differencesProbability = Statistics.normalProbability(z);
 
                 } else if(count > 3){
@@ -116,15 +116,15 @@ public class WilcoxonSumRankStats extends TesterStats {
 
                     double distributionTotal = (double) (t / (a*z));
                     long min = (count/2 * ( count/2+1 )/2);
-                    X =  (X - min); Y =  (Y - min);
+                    //X =  (X - min); Y =  (Y - min);
 
                     int Wstat = (int)Math.ceil(Math.min(X, Y));
 
-                    for (int i = 0; i < Wstat+1; i++) {
-                        differencesProbability += ProbabilityDistribution.WilcoxonSumRank(Wstat, xStats.count, yStats.count);
+                    for (int i = (int) min; i < Wstat+1; i++) {
+                        differencesProbability += ProbabilityDistribution.WilcoxonSumRank(i, xStats.count, yStats.count);
                     }
 
-                    differencesProbability = 2*(differencesProbability / distributionTotal);
+                    differencesProbability = (differencesProbability / distributionTotal);
                 }
 
                 else {
