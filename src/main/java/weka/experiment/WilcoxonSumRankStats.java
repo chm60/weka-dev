@@ -116,15 +116,15 @@ public class WilcoxonSumRankStats extends TesterStats {
 
                     double distributionTotal = (double) (t / (a*z));
                     long min = (count/2 * ( count/2+1 )/2);
-                    X =  (X - min); Y =  (Y - min);
+                    //X =  (X - min); Y =  (Y - min);
 
                     int Wstat = (int)Math.ceil(Math.min(X, Y));
 
-                    for (int i = 0; i < Wstat+1; i++) {
-                        differencesProbability += ProbabilityDistribution.WilcoxonSumRank(Wstat, xStats.count, yStats.count);
+                    for (int i = (int) min; i < Wstat+1; i++) {
+                        differencesProbability += ProbabilityDistribution.WilcoxonSumRank(i, xStats.count, yStats.count);
                     }
 
-                    differencesProbability = 2*(differencesProbability / distributionTotal);
+                    differencesProbability = (differencesProbability / distributionTotal);
                 }
 
                 else {
