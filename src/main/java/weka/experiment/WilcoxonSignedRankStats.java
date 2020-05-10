@@ -88,11 +88,10 @@ public class WilcoxonSignedRankStats extends TesterStats {
             */
            if (ranker.returnPairCount() > 20) {
 
-                    double Wstat = Math.floor(Math.min(negativeCounter, positiveCounter));
-                    double mn = ranker.returnPairCount()*(ranker.returnPairCount()+1)/4;
-                    double stdDev = Math.sqrt((ranker.returnPairCount()*(ranker.returnPairCount()+1)*(2*ranker.returnPairCount()+1))/24);
-                    double z = (Wstat - mn) / stdDev;
-                    differencesProbability = Statistics.normalProbability(z);
+                   double Wstat = Math.floor(Math.min(negativeCounter, positiveCounter));
+                   double mn = differencesStats.sum / differencesStats.count;
+                   double z = (Wstat - mn) / differencesStats.stdDev;
+                   differencesProbability = Statistics.normalProbability(z);
 
                /**
                 * When more there are less than 20 pairs use a Wsum distribution to asses for significance, down to a lower limit of 3.

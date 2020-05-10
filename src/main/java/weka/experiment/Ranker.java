@@ -90,9 +90,11 @@ public class Ranker {
 
     public double checkRank(double value){
 
-        if(rankedDifferences.isEmpty()){
+        if(rankedDifferences.isEmpty() || !rankedDifferences.containsKey(Math.abs(value))){
             return 0.0;
         }
+
+
 
         return rankedDifferences.get(Math.abs(value));
 

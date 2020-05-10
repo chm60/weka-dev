@@ -1,5 +1,5 @@
 /**
- * @author Len Trigg (trigg@cs.waikato.ac.nz)  Chris Machala (chm60@aber.ac.uk)
+ * @author Chris Machala (chm60@aber.ac.uk)
  */
 
 
